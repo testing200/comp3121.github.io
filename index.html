@@ -2,7 +2,13 @@
 <html>
 <head>
 <title>COMP3121 RONNX.W PAGE</title>
-<!-- Global site tag (gtag.js) - Google Analytics -->
+<script>
+	var queryString = window.location.search.slice(1);
+	if(queryString){
+	qString = queryString.split('q=')[1].split('&')[0];
+	console.log(qString);
+	}
+</script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137384879-1"></script>
 <script>
@@ -11,15 +17,6 @@
   gtag('js', new Date());
 
   gtag('config', 'UA-137384879-1');
-</script>
-
-
-<script>
-	var queryString = window.location.search.slice(1);
-	if(queryString){
-	qString = queryString.split('q=')[1].split('&')[0];
-	console.log(qString);
-	}
 </script>
 	
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
