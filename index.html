@@ -9,7 +9,6 @@
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-
         gtag('config', 'UA-137384879-1');
     </script>
 
@@ -36,7 +35,6 @@
                     if (response && !response.error) {
                         /* handle the result */
                     }
-
                 }
             );
         }
@@ -52,8 +50,8 @@
                     $.each(response.data, function (seq, value) {
                         var img = $("<img/>").attr("src", value.images.low_resolution.url);
                         var createdAt = $("<span/>").text("Posted " + value.created_time);
-                        footer.append(createdAt);
-                        var div = $("<div/>").append(img, footer).addClass("ig_post");
+                        var inner_footer = footer.clone().append(createdAt);
+                        var div = $("<div/>").append(img, inner_footer).addClass("ig_post");
                         $("#ig-postfarm").append(div);
                         console.log(timeDifference(Date.now() - value.created_time));
                     })
@@ -62,30 +60,46 @@
                 dataType: 'json'
             });
         }
-
         function test(){
             $.ajax({
-                    url: 'https://www.tumblr.com/oauth/request_token',
+                    url: 'https://www.flickr.com/services/oauth/request_token',
                     method: 'POST',
-                    data:{
-                        
+                    data:{                     
+                        oauth_nonce: 89601180,
+                        oauth_timestamp: 1305583298,
+                        oauth_consumer_key: '653e7a6ecc1d528c516cc8f92cf98611',
+                        oauth_signature_method: 'HMAC-SHA1',
+                        oauth_version: 1.0,
+                        oauth_callback: 'https://www.instagram.com/developer/endpoints/users/'
                     },
                     beforeSend: function(xhr) {
                         xhr.setRequestHeader("Authorization", "Bearer 6QXNMEMFHNY4FJ5ELNFMP5KRW52WFXN5")
                     }, success: function(data){
                         alert(data);
                         //process the JSON data etc
+                    },failed: function(){
+                        console.log("FA");
                     }
             })
-
         }
 
+        function parseParms(str) {
+	var pieces = str.split("&"), data = {}, i, parts;
+	// process each query pair
+	for (i = 0; i < pieces.length; i++) {
+		parts = pieces[i].split("=");
+		if (parts.length < 2) {
+			parts.push("");
+		}
+		data[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+	}
+	return data;
+}
         function timeDifference(date) {
             var dateFromAPI = "2016-02-10T00:00:00Z";
             var now = new Date();
             var datefromAPITimeStamp = (new Date(dateFromAPI)).getTime();
             var nowTimeStamp = now.getTime();
-
             var microSecondsDiff = Math.abs(datefromAPITimeStamp - nowTimeStamp );
             // Number of milliseconds per day =
             //   24 hrs/day * 60 minutes/hour * 60 seconds/minute * 1000 msecs/second
@@ -97,9 +111,10 @@
             if (queryString) {
                 qString = queryString.split('q=')[1].split('&')[0];
                 console.log(qString);
-
             }
             getIGposts.call(this, "12480168229", "12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79");
+            test.call(this);
+            console.log(parseParms(document.location.hash.substring(1)));
         });	
     </script>
     <style>
@@ -109,7 +124,6 @@
             text-align: center;
             padding-top: 15px;
         }
-
         .ig_footer {
             background-color: lightblue;
             vertical-align: middle;
@@ -119,7 +133,6 @@
             display:flex;
             margin-top: 15px;
         }
-
         .footer_icon {
             position: relative;
             width: 25px;
@@ -154,7 +167,6 @@
             FB.AppEvents.logPageView();
             loopFBposts.call(this, "121839578966030", "333396590622882|zEw0UcZtz6nbkDKNV02VqGfQzS0");
         };
-
         (function (d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
             if (d.getElementById(id)) { return; }
