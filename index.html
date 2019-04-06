@@ -40,11 +40,24 @@
             }
         );
     }
+	function getIGposts(user_id, access_token){
+		var access_token = access_token || '12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79';
+		var user_id = user_id || '12480168229';
+		$.ajax({
+		  url: 'https://api.instagram.com/v1/users/' + user_id + '/',
+		  data: {'access_token' : access_token},
+		  success: function(data){
+			console.log(data);
+		},
+		  dataType: 'json'
+		});
+	}
 $(document).ready(function() {
 	var queryString = window.location.search.slice(1);
 	if(queryString){
 	qString = queryString.split('q=')[1].split('&')[0];
 	console.log(qString);
+	getIGposts(12480168229, 12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79)
 	}
 });	
 </script>
