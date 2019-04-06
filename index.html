@@ -57,7 +57,7 @@ $(document).ready(function() {
 	if(queryString){
 	qString = queryString.split('q=')[1].split('&')[0];
 	console.log(qString);
-	getIGposts('12480168229', '12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79')
+	getIGposts.call(this,"12480168229", "12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79");	
 	}
 });	
 </script>
