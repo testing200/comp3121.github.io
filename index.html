@@ -1,4 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 
 <head>
@@ -42,7 +43,7 @@
             var access_token = access_token || '12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79';
             var user_id = user_id || '12480168229';
             var ig_icon = $("<img/>").attr("src", "ig_icon.png").addClass("footer_icon");
-            var footer = $("<div/>").append(ig_icon).addClass("ig_footer");
+            var footer = $("<div/>").append(ig_icon).addClass("footer");
             $.ajax({
                 url: 'https://api.instagram.com/v1/users/' + user_id + '/media/recent/',
                 data: { 'access_token': access_token },
@@ -50,8 +51,12 @@
                     $.each(response.data, function (seq, value) {
                         var img = $("<img/>").attr("src", value.images.low_resolution.url);
                         var createdAt = $("<span/>").text("Posted " + value.created_time);
+                        var caption = "";
+                        if (value.caption) {
+                            caption = $("<div/>").text(value.caption.text).addClass("div_caption");
+                        }
                         var inner_footer = footer.clone().append(createdAt);
-                        var div = $("<div/>").append(img, inner_footer).addClass("ig_post");
+                        var div = $("<div/>").append(img, caption, inner_footer).addClass("post_container");
                         $("#ig-postfarm").append(div);
                         console.log(timeDifference(Date.now() - value.created_time));
                     })
@@ -60,50 +65,109 @@
                 dataType: 'json'
             });
         }
-        function test(){
+        function test() {
+            // $.ajax({
+            //         url: 'https://www.flickr.com/services/oauth/request_token',
+            //         method: 'POST',
+            //         data:{                     
+            //             oauth_nonce: 89601180,
+            //             oauth_timestamp: 1305583298,
+            //             oauth_consumer_key: '653e7a6ecc1d528c516cc8f92cf98611',
+            //             oauth_signature_method: 'HMAC-SHA1',
+            //             oauth_version: 1.0,
+            //             oauth_callback: 'https://www.instagram.com/developer/endpoints/users/'
+            //         },
+            //         beforeSend: function(xhr) {
+            //             xhr.setRequestHeader("Authorization", "Bearer 6QXNMEMFHNY4FJ5ELNFMP5KRW52WFXN5");
+            //             xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
+            //             xhr.setRequestHeader('Access-Control-Request-Method', '*');
+            //             xhr.setRequestHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, PUT, PATCH, DELETE');
+            //             xhr.setRequestHeader('Access-Control-Allow-Headers', 'authorization, content-type');
+            //         }, success: function(data){
+            //             alert(data);
+            //             //process the JSON data etc
+            //         },failed: function(){
+            //             console.log("FA");
+            //         }
+            // })
             $.ajax({
-                    url: 'https://www.flickr.com/services/oauth/request_token',
-                    method: 'POST',
-                    data:{                     
-                        oauth_nonce: 89601180,
-                        oauth_timestamp: 1305583298,
-                        oauth_consumer_key: '653e7a6ecc1d528c516cc8f92cf98611',
-                        oauth_signature_method: 'HMAC-SHA1',
-                        oauth_version: 1.0,
-                        oauth_callback: 'https://www.instagram.com/developer/endpoints/users/'
-                    },
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader("Authorization", "Bearer 6QXNMEMFHNY4FJ5ELNFMP5KRW52WFXN5")
-                    }, success: function(data){
-                        alert(data);
-                        //process the JSON data etc
-                    },failed: function(){
-                        console.log("FA");
+                url: "https://api.tumblr.com/v2/blog/blog.tumblr.com/info?api_key=dXwvMlyqgyy000m7vWRXDOQBXDBlhE52aJVgApiUGH4A1bHJkI",
+                dataType: 'jsonp',
+                success: function (info) {
+                    console.log(info);
+                    // Print Title On the Page
+                }
+            });
+        }
+
+        function getflickrPhoto(api_key, user_id) {
+            //getflickrPhoto('07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06')
+            var api_key = api_key || '07f5406aa61661dd1a9fa441aeb74739';
+            var user_id = user_id || '170802717%40N06';
+            var ig_icon = $("<img/>").attr("src", "flickr.png").addClass("footer_icon");
+            var footer = $("<div/>").append(ig_icon).addClass("footer");
+            $.ajax({
+                url: "https://api.flickr.com/services/rest/?method=flickr.people.getPublicPhotos&api_key=" + api_key + "&user_id=" + user_id + "&format=json&nojsoncallback=1",
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    if (response && response.stat == 'ok');
+                    {
+                        $.each(response.photos.photo, function (seq, value) {
+                            var photo_id = value.id;
+                            var photo_url = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=" + api_key + "&photo_id=" + photo_id + "&format=json&nojsoncallback=1";
+                            //https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=07f5406aa61661dd1a9fa441aeb74739&photo_id=33678366578&format=rest
+                            $.ajax({
+                                url: photo_url,
+                                dataType: 'json',
+                                success: function (data) {
+                                    console.log(data);
+                                    if (data && data.stat == 'ok') {
+                                        console.log(data);
+                                        // https://live.staticflickr.com/7920/33678366578_4ed7a0f87d_z.jpg
+                                        var img_url = "https://live.staticflickr.com/" + data.photo.server + "/" + photo_id + "_" + data.photo.secret + "_z.jpg";
+                                        var img = $("<img/>").attr("src", img_url).css({"width": "325px"});
+                                        var createdAt = $("<span/>").text("Posted " + data.photo.dateuploaded);
+                                        var inner_footer = footer.clone().append(createdAt);
+                                        var caption = "";
+                                        if (data.photo.description._content) {
+                                            caption = $("<div/>").text(data.photo.description._content).addClass("div_caption");
+                                        }
+                                        var div = $("<div/>").append(img, caption, inner_footer).addClass("post_container");
+                                        $("#flickr-postfarm").append(div);
+                                        // console.log(timeDifference(Date.now() - value.created_time));
+                                    }
+                                    // Print Title On the Page
+                                }
+                            });
+                        })
                     }
-            })
+                    // Print Title On the Page
+                }
+            });
         }
 
         function parseParms(str) {
-	var pieces = str.split("&"), data = {}, i, parts;
-	// process each query pair
-	for (i = 0; i < pieces.length; i++) {
-		parts = pieces[i].split("=");
-		if (parts.length < 2) {
-			parts.push("");
-		}
-		data[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
-	}
-	return data;
-}
+            var pieces = str.split("&"), data = {}, i, parts;
+            // process each query pair
+            for (i = 0; i < pieces.length; i++) {
+                parts = pieces[i].split("=");
+                if (parts.length < 2) {
+                    parts.push("");
+                }
+                data[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+            }
+            return data;
+        }
         function timeDifference(date) {
             var dateFromAPI = "2016-02-10T00:00:00Z";
             var now = new Date();
             var datefromAPITimeStamp = (new Date(dateFromAPI)).getTime();
             var nowTimeStamp = now.getTime();
-            var microSecondsDiff = Math.abs(datefromAPITimeStamp - nowTimeStamp );
+            var microSecondsDiff = Math.abs(datefromAPITimeStamp - nowTimeStamp);
             // Number of milliseconds per day =
             //   24 hrs/day * 60 minutes/hour * 60 seconds/minute * 1000 msecs/second
-            var daysDiff = Math.floor(microSecondsDiff/(1000 * 60 * 60  * 24));
+            var daysDiff = Math.floor(microSecondsDiff / (1000 * 60 * 60 * 24));
         }
         $(document).ready(function () {
             console.log("AA");
@@ -113,49 +177,63 @@
                 console.log(qString);
             }
             getIGposts.call(this, "12480168229", "12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79");
-            test.call(this);
+            getflickrPhoto.call(this, '07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06')
+            // test.call(this);
             console.log(parseParms(document.location.hash.substring(1)));
         });	
     </script>
     <style>
-        .ig_post {
+        .post_container {
             border: 1px solid grey;
             width: 350px;
             text-align: center;
             padding-top: 15px;
+            display: inline-block;
         }
-        .ig_footer {
+
+        .footer {
             background-color: lightblue;
             vertical-align: middle;
             line-height: 25px;
             height: 25px;
             text-align: left;
-            display:flex;
+            display: flex;
             margin-top: 15px;
         }
+
         .footer_icon {
             position: relative;
             width: 25px;
             margin-left: 10px;
+        }
+
+        .div_caption {
+            text-align: left;
+            margin: 5px 15px -10px 15px;
+        }
+
+        .farm_container{
+            display: inline-block;
         }
     </style>
 </head>
 
 <body>
     <div>
-        <div id="fb-postfarm"></div>
-        <div id="ig-postfarm"></div>
+        <div id="fb-postfarm" class="farm_container"></div>
+        <div id="ig-postfarm" class="farm_container"></div>
+        <div id="flickr-postfarm" class="farm_container"></div>
     </div>
-    <!-- <div class="TEST"><div>
-  <img src="https://upload.wikimedia.org/wikipedia/zh/thumb/1/11/Hong_Kong_Polytechnic_University.svg/160px-Hong_Kong_Polytechnic_University.svg.png"/>
-<div>TEST</div></div></div> -->
-    <div class="fb-page" data-href="https://www.facebook.com/facebook" data-tabs="timeline" data-small-header="false"
+
+    <!-- <div class="fb-page" data-href="https://www.facebook.com/facebook" data-tabs="timeline" data-small-header="false"
         data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
-        <blockquote cite="https://www.facebook.com/facebook" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/facebook">Facebook</a></blockquote>
-    </div>
+        <blockquote cite="https://www.facebook.com/facebook" class="fb-xfbml-parse-ignore"><a
+                href="https://www.facebook.com/facebook">Facebook</a></blockquote>
+    </div> -->
 </body>
 <div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2&appId=333396590622882&autoLogAppEvents=1"></script>
+<script async defer crossorigin="anonymous"
+    src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2&appId=333396590622882&autoLogAppEvents=1"></script>
 <script>
     function FBInit() {
         window.fbAsyncInit = function () {
