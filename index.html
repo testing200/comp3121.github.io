@@ -3,7 +3,6 @@
 <html>
 
 <head>
-    <meta name="google-site-verification" content="02e9IGZNR6vpKc383yQthkY7oIZzzJ9rcCIuBzUconY" />
     <title>COMP3121 RONNX.W PAGE</title>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137384879-1"></script>
@@ -15,6 +14,7 @@
     </script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
     <!-- <script src="./Scripts/lib/underscore-min_1.9.1.js"></script> -->
     <!-- <script async defer src="https://connect.facebook.net/en_US/sdk.js"></script> -->
 
@@ -127,7 +127,7 @@
                                         console.log(data);
                                         // https://live.staticflickr.com/7920/33678366578_4ed7a0f87d_z.jpg
                                         var img_url = "https://live.staticflickr.com/" + data.photo.server + "/" + photo_id + "_" + data.photo.secret + "_z.jpg";
-                                        var img = $("<img/>").attr("src", img_url).css({"width": "325px"});
+                                        var img = $("<img/>").attr("src", img_url).css({ "width": "325px" });
                                         var createdAt = $("<span/>").text("Posted " + data.photo.dateuploaded);
                                         var inner_footer = footer.clone().append(createdAt);
                                         var caption = "";
@@ -146,6 +146,55 @@
                     // Print Title On the Page
                 }
             });
+        }
+
+        function getYoutubeList(channel_id, key) {
+            var channel_id = channel_id || 'UCXer80GTQcPPs4E1HcjFS2g';
+            var key = key || 'AIzaSyBO_huHjsv757yzeRa0gdWxHLLejU5Kro0';
+            $.when(getYoutubeChannel.call(this, channel_id, key)).done(function(response){
+                $.each(response.items, function (seq, playlist) {
+                    $.when(getYoutubePlayListVideos.call(this, playlist.contentDetails.relatedPlaylists.uploads, key)).done(function (videoList) {
+                        $.each(videoList.items, function (seq, data) {
+                            console.log(data);
+                            var url = "https://www.youtube.com/embed/" + data.contentDetails.videoId;
+                            var video = $("<embed/>").width(220).height(300).attr({"src":url});
+                            $("#content-farm").append(video);
+                        })
+                    })
+                })
+            })
+            // $.ajax({
+            //     url: "https://www.googleapis.com/youtube/v3/channels",
+            //     data: { part: "contentDetails"
+            //     ,id: channel_id
+            //     , key: key},
+            //     dataType: 'json',
+            //     success: function (response) {
+            //         $.each(response.items, function(seq, playlist){
+			// 			console.log(playlist.id)
+            //         })
+            //     }
+            // })
+        }
+
+        function getYoutubeChannel(channel_id, key){
+            return $.ajax({
+                url: "https://www.googleapis.com/youtube/v3/channels",
+                data: { part: "contentDetails"
+                ,id: channel_id
+                , key: key},
+                dataType: 'json'
+            })
+        }
+
+        function getYoutubePlayListVideos(playlistId, key){
+            return $.ajax({
+                url: "https://www.googleapis.com/youtube/v3/playlistItems",
+                data: { part: "contentDetails"
+                ,playlistId: playlistId
+                , key: key},
+                dataType: 'json'
+            })
         }
 
         function parseParms(str) {
@@ -178,7 +227,8 @@
                 console.log(qString);
             }
             getIGposts.call(this, "12480168229", "12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79");
-            getflickrPhoto.call(this, '07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06')
+            getflickrPhoto.call(this, '07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06');
+            getYoutubeList.call(this, 'UCXer80GTQcPPs4E1HcjFS2g', 'AIzaSyBO_huHjsv757yzeRa0gdWxHLLejU5Kro0')
             // test.call(this);
             console.log(parseParms(document.location.hash.substring(1)));
         });	
@@ -213,14 +263,14 @@
             margin: 5px 15px -10px 15px;
         }
 
-        .farm_container{
+        .farm_container {
             display: inline-block;
         }
     </style>
 </head>
 
 <body>
-    <div>
+    <div id="content-farm">
         <div id="fb-postfarm" class="farm_container"></div>
         <div id="ig-postfarm" class="farm_container"></div>
         <div id="flickr-postfarm" class="farm_container"></div>
