@@ -4,6 +4,11 @@
 
 <head>
     <title>COMP3121 RONNX.W PAGE</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="RON.W, G.N, K.C, COMP3121">
+    <meta name="keywords" content="RON.W, G.N, K.C">
+    <meta name="author" content="RON.W, G.N, K.C">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137384879-1"></script>
     <script>
@@ -32,7 +37,7 @@
                     $.each(response.data, function (seq, value) {
                         var div = $("<div/>").attr({ "data-href": value.permalink_url, "data-width": 180, "data-height": 150 })
                             .addClass("fb-post");
-                        $("#fb-postfarm").append(div);
+                        $("#content-farm").append(div);
                     })
                     if (response && !response.error) {
                         /* handle the result */
@@ -58,10 +63,22 @@
                         }
                         var inner_footer = footer.clone().append(createdAt);
                         var div = $("<div/>").append(img, caption, inner_footer).addClass("post_container");
-                        $("#ig-postfarm").append(div);
+                        $("#content-farm").append(div);
                         console.log(timeDifference(Date.now() - value.created_time));
                     })
                     console.log(response);
+
+                    // $.getScript("//www.instagram.com/embed.js", function (data, textStatus, jqxhr) {
+                    //     $.each(response.data, function (seq, value) {
+                    //         var url = value.link + "?utm_source=ig_embed&amp;utm_medium=loading";
+                    //         var jobj = $("<blockquote/>").addClass("instagram-media").attr({"data-instgrm-permalink":url})
+                    //         console.log(url);
+
+                    //         $("#content-farm").append(jobj);
+                    //         // console.log(timeDifference(Date.now() - value.created_time));
+                    //     })
+                    //     console.log(response);
+                    // })
                 },
                 dataType: 'json'
             });
@@ -104,7 +121,7 @@
         function getflickrPhoto(api_key, user_id) {
             //getflickrPhoto('07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06')
             var api_key = api_key || '07f5406aa61661dd1a9fa441aeb74739';
-            var user_id = user_id || '170802717%40N06';
+            var user_id = user_id || '170802717@N06';
             var ig_icon = $("<img/>").attr("src", "flickr.png").addClass("footer_icon");
             var footer = $("<div/>").append(ig_icon).addClass("footer");
             $.ajax({
@@ -114,33 +131,40 @@
                     console.log(response);
                     if (response && response.stat == 'ok');
                     {
-                        $.each(response.photos.photo, function (seq, value) {
-                            var photo_id = value.id;
-                            var photo_url = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=" + api_key + "&photo_id=" + photo_id + "&format=json&nojsoncallback=1";
-                            //https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=07f5406aa61661dd1a9fa441aeb74739&photo_id=33678366578&format=rest
-                            $.ajax({
-                                url: photo_url,
-                                dataType: 'json',
-                                success: function (data) {
-                                    console.log(data);
-                                    if (data && data.stat == 'ok') {
+                        $.getScript("https://embedr.flickr.com/assets/client-code.js", function (data, textStatus, jqxhr) {
+                            $.each(response.photos.photo, function (seq, value) {
+                                var photo_id = value.id;
+                                var photo_url = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=" + api_key + "&photo_id=" + photo_id + "&format=json&nojsoncallback=1";
+                                //https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=07f5406aa61661dd1a9fa441aeb74739&photo_id=33678366578&format=rest
+                                $.ajax({
+                                    url: photo_url,
+                                    dataType: 'json',
+                                    success: function (data) {
                                         console.log(data);
-                                        // https://live.staticflickr.com/7920/33678366578_4ed7a0f87d_z.jpg
-                                        var img_url = "https://live.staticflickr.com/" + data.photo.server + "/" + photo_id + "_" + data.photo.secret + "_z.jpg";
-                                        var img = $("<img/>").attr("src", img_url).css({ "width": "325px" });
-                                        var createdAt = $("<span/>").text("Posted " + data.photo.dateuploaded);
-                                        var inner_footer = footer.clone().append(createdAt);
-                                        var caption = "";
-                                        if (data.photo.description._content) {
-                                            caption = $("<div/>").text(data.photo.description._content).addClass("div_caption");
+                                        if (data && data.stat == 'ok') {
+                                            var post_url = data.photo.urls.url[0]._content + "in/dateposted-public/";
+                                            var img_url = "https://live.staticflickr.com/" + data.photo.server + "/" + photo_id + "_" + data.photo.secret + "_n.jpg";
+                                            //https://www.flickr.com/photos/170802717@N06/40589961393/in/dateposted-public/
+                                            var jobj = $("<a/>").attr({"data-flickr-embed":"true", "data-header":"true", "data-footer":"true", "href" : post_url});
+                                            var imgobj = $("<img/>").attr({"src" :img_url}).width(320).height(180);
+                                            $("#content-farm").append(jobj.append(imgobj));
+
+                                            // console.log(data);
+                                            // var img_url = "https://live.staticflickr.com/" + data.photo.server + "/" + photo_id + "_" + data.photo.secret + "_z.jpg";
+                                            // var img = $("<img/>").attr("src", img_url).css({ "width": "325px" });
+                                            // var createdAt = $("<span/>").text("Posted " + data.photo.dateuploaded);
+                                            // var inner_footer = footer.clone().append(createdAt);
+                                            // var caption = "";
+                                            // if (data.photo.description._content) {
+                                            //     caption = $("<div/>").text(data.photo.description._content).addClass("div_caption");
+                                            // }
+                                            // var div = $("<div/>").append(img, caption, inner_footer).addClass("post_container");
+                                            // $("#content-farm").append(div);
                                         }
-                                        var div = $("<div/>").append(img, caption, inner_footer).addClass("post_container");
-                                        $("#flickr-postfarm").append(div);
-                                        // console.log(timeDifference(Date.now() - value.created_time));
+                                        // Print Title On the Page
                                     }
-                                    // Print Title On the Page
-                                }
-                            });
+                                });
+                            })
                         })
                     }
                     // Print Title On the Page
@@ -157,7 +181,7 @@
                         $.each(videoList.items, function (seq, data) {
                             console.log(data);
                             var url = "https://www.youtube.com/embed/" + data.contentDetails.videoId;
-                            var video = $("<embed/>").width(220).height(300).attr({"src":url});
+                            var video = $("<embed/>").width(500).height(300).attr({"src":url});
                             $("#content-farm").append(video);
                         })
                     })
@@ -176,7 +200,6 @@
             //     }
             // })
         }
-
         function getYoutubeChannel(channel_id, key){
             return $.ajax({
                 url: "https://www.googleapis.com/youtube/v3/channels",
@@ -194,6 +217,32 @@
                 ,playlistId: playlistId
                 , key: key},
                 dataType: 'json'
+            })
+        }
+
+        function getTumblrs(api_key){//getTumblrs.call(this, 'dXwvMlyqgyy000m7vWRXDOQBXDBlhE52aJVgApiUGH4A1bHJkI')
+            var api_key = api_key || 'dXwvMlyqgyy000m7vWRXDOQBXDBlhE52aJVgApiUGH4A1bHJkI';
+            $.ajax({
+                url: "https://api.tumblr.com/v2/blog/black-dd0101.tumblr.com/posts/",
+                data: {
+                    api_key: api_key},
+                dataType: 'json',
+                success: function(response){
+                    console.log(response);
+                    if(response.meta.status == 200){
+                        $.getScript( "https://assets.tumblr.com/post.js", function( data, textStatus, jqxhr ) {
+                            $.each(response.response.posts, function (seq, post) {
+                                var embed_url = "https://embed.tumblr.com/embed/post/a3SqPf00rL1mpKmJpjfwrA/" + post.id;
+                                console.log(embed_url);
+                                var div = $("<div/>").attr({ "data-href": embed_url }).addClass("tumblr-post").css({width:"300px", "display": "inline-block"});
+                                console.log(div);
+
+                                $("#content-farm").append(div);
+                            })
+                        });
+                    }
+                    $(".tumblr-embed").css("display", "inline-block");
+                }
             })
         }
 
@@ -226,9 +275,11 @@
                 qString = queryString.split('q=')[1].split('&')[0];
                 console.log(qString);
             }
-            getIGposts.call(this, "12480168229", "12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79");
-            getflickrPhoto.call(this, '07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06');
-            getYoutubeList.call(this, 'UCXer80GTQcPPs4E1HcjFS2g', 'AIzaSyBO_huHjsv757yzeRa0gdWxHLLejU5Kro0')
+            $(".tumblr-embed").css("display", "inline-block");
+            // getIGposts.call(this, "12480168229", "12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79");
+            // getflickrPhoto.call(this, '07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06');
+            // getYoutubeList.call(this, 'UCXer80GTQcPPs4E1HcjFS2g', 'AIzaSyBO_huHjsv757yzeRa0gdWxHLLejU5Kro0')
+
             // test.call(this);
             console.log(parseParms(document.location.hash.substring(1)));
         });	
@@ -270,31 +321,33 @@
 </head>
 
 <body>
-    <div id="content-farm">
-        <div id="fb-postfarm" class="farm_container"></div>
+    <div id="content-farm" class="farm_container"></div>
+        <!-- <div id="fb-postfarm" class="farm_container"></div>
         <div id="ig-postfarm" class="farm_container"></div>
-        <div id="flickr-postfarm" class="farm_container"></div>
-    </div>
-
+        <div id="flickr-postfarm" class="farm_container"></div> -->
     <!-- <div class="fb-page" data-href="https://www.facebook.com/facebook" data-tabs="timeline" data-small-header="false"
         data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
         <blockquote cite="https://www.facebook.com/facebook" class="fb-xfbml-parse-ignore"><a
                 href="https://www.facebook.com/facebook">Facebook</a></blockquote>
     </div> -->
 </body>
-<div id="fb-root"></div>
 <script async defer crossorigin="anonymous"
     src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2&appId=333396590622882&autoLogAppEvents=1"></script>
 <script>
-    function FBInit() {
+    function FBInit() {//https://graph.facebook.com/v3.2/121839578966030/feed?fields=permalink_url&access_token=333396590622882|zEw0UcZtz6nbkDKNV02VqGfQzS0
         window.fbAsyncInit = function () {
             FB.init({
                 appId: '333396590622882',
                 xfbml: true,
                 version: 'v3.2'
             });
-            FB.AppEvents.logPageView();
+            // FB.AppEvents.logPageView();
             loopFBposts.call(this, "121839578966030", "333396590622882|zEw0UcZtz6nbkDKNV02VqGfQzS0");
+            getflickrPhoto.call(this, '07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06');
+            getIGposts.call(this, "12480168229", "12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79");
+            getYoutubeList.call(this, 'UCXer80GTQcPPs4E1HcjFS2g', 'AIzaSyBO_huHjsv757yzeRa0gdWxHLLejU5Kro0');
+            getTumblrs.call(this, 'dXwvMlyqgyy000m7vWRXDOQBXDBlhE52aJVgApiUGH4A1bHJkI');
+
         };
         (function (d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
@@ -306,5 +359,7 @@
     }
     FBInit();
 </script>
-
+<!-- <script src="https://embedr.flickr.com/assets/client-code.js" charset="utf-8"></script> -->
+<!-- <script src="https://assets.tumblr.com/post.js"></script> -->
+<script async src="//www.instagram.com/embed.js"></script>
 </html>
