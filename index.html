@@ -97,9 +97,9 @@
                 case "Flickr":
                     social_icon = $("<a/>")
                         .attr({ "href": "https://www.flickr.com/", "target": "_blank" })
-                        .append($("<img/>").attr("src", "./images/youtube.png").addClass(_class_social_icon));
+                        .append($("<img/>").attr("src", "./images/flickr.png").addClass(_class_social_icon));
                     jobj_profile_picture = $("<a/>")
-                        .attr({ "href": "https://" + profile_username + ".tumblr.com/", "target": "_blank" })
+                        .attr({ "href": "https://www.flickr.com/photos/" + profile_username + "/", "target": "_blank" })
                         .append($("<img/>").attr("src", profile_picture).addClass(_class_profile_picture));
                     break;
                 default: break;
@@ -141,7 +141,6 @@
                 url: "https://api.flickr.com/services/rest/?method=flickr.people.getPublicPhotos&api_key=" + api_key + "&user_id=" + user_id + "&format=json&nojsoncallback=1",
                 dataType: 'json',
                 success: function (response) {
-                    console.log(response);
                     var userInfo = getflickrUserInfo.call(this, api_key, user_id);
                     console.log(userInfo);
                     if (response && response.stat == 'ok');
@@ -149,7 +148,6 @@
                         $.each(response.photos.photo, function (seq, value) {
                             var photo_id = value.id;
                             var photo_url = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=" + api_key + "&photo_id=" + photo_id + "&format=json&nojsoncallback=1";
-                            //https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=07f5406aa61661dd1a9fa441aeb74739&photo_id=33678366578&format=rest
                             $.ajax({
                                 url: photo_url,
                                 dataType: 'json',
@@ -157,10 +155,10 @@
                                     console.log(data);
                                     if (data && data.stat == 'ok') {
                                         var img_url = "https://live.staticflickr.com/" + data.photo.server + "/" + photo_id + "_" + data.photo.secret + "_z.jpg";
-                                        var divPostImg = renderPostIMGContainer.call(this, img_url, userInfo.person.photosurl._content || 'https://www.flickr.com/photos/170802717@N06/');
+                                        var divPostImg = renderPostIMGContainer.call(this, img_url, data.photo.urls.url[0]._content);
 
                                         var post_info = render_post_info.call(this, "https://s.yimg.com/pw/images/buddyicon05_r.png#170802717@N06",
-                                            userInfo.person.realname._content, userInfo.id, data.photo.dateuploaded * 1000, "Flickr")
+                                            data.photo.owner.realname, data.photo.owner.nsid, data.photo.dateuploaded * 1000, "Flickr")
                                         var caption = "";
                                         if (data.photo.description) {
                                             caption = $("<div/>").text(data.photo.description._content).addClass("post-content");
@@ -182,7 +180,7 @@
             return $.ajax({
                 url: "https://api.flickr.com/services/rest/?method=flickr.people.getInfo&api_key=" + api_key + "&user_id=" + user_id + "&format=json&nojsoncallback=1",
                 method: "GET",
-                dataType: 'json'
+                dataType: 'jsonp'
             })
         }
 
@@ -401,6 +399,7 @@
         .social_icon {
             width: 35px;
             float: right;
+            cursor: pointer;
         }
     </style>
 </head>
