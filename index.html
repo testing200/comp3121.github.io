@@ -8,7 +8,7 @@
     <meta name="description" content="RON.W, G.N, K.C, COMP3121">
     <meta name="keywords" content="RON.W, G.N, K.C">
     <meta name="author" content="RON.W, G.N, K.C">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-137384879-1"></script>
     <script>
@@ -24,6 +24,11 @@
     <!-- <script async defer src="https://connect.facebook.net/en_US/sdk.js"></script> -->
 
     <script>
+        var _class_profile_name = "profile_name";
+        var _class_profile_picture = "profile_picture";
+        var _class_profile_username = "profile_username";
+        var _class_profile_info = "profile_info";
+        var _class_social_icon = "social_icon";
         function loopFBposts(page_id, access_token) {
             FB.api(
                 "/" + page_id + "/feed"
@@ -45,76 +50,86 @@
                 }
             );
         }
+
+        function findTag(jobj_caption, caption) {
+            caption = caption.trim().replace(/(\r\n|\n|\r)/gm, "");;
+            var arrCaption = caption.split("#");
+            if (arrCaption.length > 1) {
+                arrCaption = arrCaption.filter(function (d) { return d != "" })
+                arrCaption = _.map(arrCaption, function (value) {
+                    return value.split(" ")[0];
+                });
+            }
+        }
+
+        function render_post_info(profile_picture, profile_name, profile_username, createdAt, social_type) {
+            var jobj_profile_picture = '';
+            var profile_name = $("<div/>").text(profile_name).addClass(_class_profile_name);
+            var jobj_profile_username = $("<div/>").text("@" + profile_username).addClass(_class_profile_username);
+            var createDatetime = '';//$("<div/>").text("Created At " + new Date(createdAt * 1000));
+            var dateago = $("<div/>").text(timeDifference.call(this, createdAt));
+            var social_icon = "";
+            switch (social_type) {
+                case "Instagram":
+                    social_icon = $("<a/>")
+                        .attr({ "href": "https://www.instagram.com/", "target": "_blank" })
+                        .append($("<img/>").attr("src", "./images/instagram.png").addClass(_class_social_icon));
+                    jobj_profile_picture = $("<a/>")
+                        .attr({ "href": "https://www.instagram.com/" + profile_username, "target": "_blank" })
+                        .append($("<img/>").attr("src", profile_picture).addClass(_class_profile_picture));
+                    break;
+                case "Youtube":
+                    social_icon = $("<a/>")
+                        .attr({ "href": "https://www.youtube.com/", "target": "_blank" })
+                        .append($("<img/>").attr("src", "./images/youtube.png").addClass(_class_social_icon));
+                    jobj_profile_picture = $("<a/>")
+                        .attr({ "href": "https://www.youtube.com/channel/" + profile_username, "target": "_blank" })
+                        .append($("<img/>").attr("src", profile_picture).addClass(_class_profile_picture));
+                    break;
+                case "Tumblr":
+                    social_icon = $("<a/>")
+                        .attr({ "href": "https://www.tumblr.com/", "target": "_blank" })
+                        .append($("<img/>").attr("src", "./images/tumblr-logo.png").addClass(_class_social_icon));
+                    jobj_profile_picture = $("<a/>")
+                        .attr({ "href": "https://" + profile_username + ".tumblr.com/", "target": "_blank" })
+                        .append($("<img/>").attr("src", profile_picture).addClass(_class_profile_picture));
+                    break;
+                case "Flickr":
+                    social_icon = $("<a/>")
+                        .attr({ "href": "https://www.flickr.com/", "target": "_blank" })
+                        .append($("<img/>").attr("src", "./images/youtube.png").addClass(_class_social_icon));
+                    jobj_profile_picture = $("<a/>")
+                        .attr({ "href": "https://" + profile_username + ".tumblr.com/", "target": "_blank" })
+                        .append($("<img/>").attr("src", profile_picture).addClass(_class_profile_picture));
+                    break;
+                default: break;
+            }
+
+            var profile_info = $("<div/>").append(jobj_profile_username, profile_name, createDatetime, dateago).addClass(_class_profile_info);
+            var post_info = $("<div/>").addClass("post_info")
+                .append(jobj_profile_picture, profile_info, social_icon);
+            return post_info;
+        }
+
         function getIGposts(user_id, access_token) {
             var access_token = access_token || '12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79';
             var user_id = user_id || '12480168229';
-            var ig_icon = $("<img/>").attr("src", "ig_icon.png").addClass("footer_icon");
-            var footer = $("<div/>").append(ig_icon).addClass("footer");
             $.ajax({
                 url: 'https://api.instagram.com/v1/users/' + user_id + '/media/recent/',
                 data: { 'access_token': access_token },
                 success: function (response) {
                     $.each(response.data, function (seq, value) {
-                        var img = $("<img/>").attr("src", value.images.low_resolution.url);
-                        var createdAt = $("<span/>").text("Posted " + value.created_time);
+                        var divPostImg = renderPostIMGContainer.call(this, value.images.low_resolution.url, value.link);
+                        var post_info = render_post_info.call(this, value.user.profile_picture, value.user.full_name, value.user.username, value.created_time * 1000, "Instagram")
                         var caption = "";
                         if (value.caption) {
-                            caption = $("<div/>").text(value.caption.text).addClass("div_caption");
+                            caption = $("<div/>").text(value.caption.text).addClass("post-content");
                         }
-                        var inner_footer = footer.clone().append(createdAt);
-                        var div = $("<div/>").append(img, caption, inner_footer).addClass("post_container");
+                        var div = $("<div/>").append(divPostImg, post_info, caption).addClass("post-container");
                         $("#content-farm").append(div);
-                        console.log(timeDifference(Date.now() - value.created_time));
                     })
-                    console.log(response);
-
-                    // $.getScript("//www.instagram.com/embed.js", function (data, textStatus, jqxhr) {
-                    //     $.each(response.data, function (seq, value) {
-                    //         var url = value.link + "?utm_source=ig_embed&amp;utm_medium=loading";
-                    //         var jobj = $("<blockquote/>").addClass("instagram-media").attr({"data-instgrm-permalink":url})
-                    //         console.log(url);
-
-                    //         $("#content-farm").append(jobj);
-                    //         // console.log(timeDifference(Date.now() - value.created_time));
-                    //     })
-                    //     console.log(response);
-                    // })
                 },
                 dataType: 'json'
-            });
-        }
-        function test() {
-            // $.ajax({
-            //         url: 'https://www.flickr.com/services/oauth/request_token',
-            //         method: 'POST',
-            //         data:{                     
-            //             oauth_nonce: 89601180,
-            //             oauth_timestamp: 1305583298,
-            //             oauth_consumer_key: '653e7a6ecc1d528c516cc8f92cf98611',
-            //             oauth_signature_method: 'HMAC-SHA1',
-            //             oauth_version: 1.0,
-            //             oauth_callback: 'https://www.instagram.com/developer/endpoints/users/'
-            //         },
-            //         beforeSend: function(xhr) {
-            //             xhr.setRequestHeader("Authorization", "Bearer 6QXNMEMFHNY4FJ5ELNFMP5KRW52WFXN5");
-            //             xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
-            //             xhr.setRequestHeader('Access-Control-Request-Method', '*');
-            //             xhr.setRequestHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, PUT, PATCH, DELETE');
-            //             xhr.setRequestHeader('Access-Control-Allow-Headers', 'authorization, content-type');
-            //         }, success: function(data){
-            //             alert(data);
-            //             //process the JSON data etc
-            //         },failed: function(){
-            //             console.log("FA");
-            //         }
-            // })
-            $.ajax({
-                url: "https://api.tumblr.com/v2/blog/blog.tumblr.com/info?api_key=xtbg4yK19637R42UK6BhYIIoK875a9StW8X2ehqXOgRFtNjt0C",
-                dataType: 'jsonp',
-                success: function (info) {
-                    console.log(info);
-                    // Print Title On the Page
-                }
             });
         }
 
@@ -122,49 +137,40 @@
             //getflickrPhoto('07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06')
             var api_key = api_key || '07f5406aa61661dd1a9fa441aeb74739';
             var user_id = user_id || '170802717@N06';
-            var ig_icon = $("<img/>").attr("src", "flickr.png").addClass("footer_icon");
-            var footer = $("<div/>").append(ig_icon).addClass("footer");
             $.ajax({
                 url: "https://api.flickr.com/services/rest/?method=flickr.people.getPublicPhotos&api_key=" + api_key + "&user_id=" + user_id + "&format=json&nojsoncallback=1",
                 dataType: 'json',
                 success: function (response) {
                     console.log(response);
+                    var userInfo = getflickrUserInfo.call(this, api_key, user_id);
+                    console.log(userInfo);
                     if (response && response.stat == 'ok');
                     {
-                        $.getScript("https://embedr.flickr.com/assets/client-code.js", function (data, textStatus, jqxhr) {
-                            $.each(response.photos.photo, function (seq, value) {
-                                var photo_id = value.id;
-                                var photo_url = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=" + api_key + "&photo_id=" + photo_id + "&format=json&nojsoncallback=1";
-                                //https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=07f5406aa61661dd1a9fa441aeb74739&photo_id=33678366578&format=rest
-                                $.ajax({
-                                    url: photo_url,
-                                    dataType: 'json',
-                                    success: function (data) {
-                                        console.log(data);
-                                        if (data && data.stat == 'ok') {
-                                            var post_url = data.photo.urls.url[0]._content + "in/dateposted-public/";
-                                            var img_url = "https://live.staticflickr.com/" + data.photo.server + "/" + photo_id + "_" + data.photo.secret + "_n.jpg";
-                                            //https://www.flickr.com/photos/170802717@N06/40589961393/in/dateposted-public/
-                                            var jobj = $("<a/>").attr({"data-flickr-embed":"true", "data-header":"true", "data-footer":"true", "href" : post_url});
-                                            var imgobj = $("<img/>").attr({"src" :img_url}).width(320).height(180);
-                                            $("#content-farm").append(jobj.append(imgobj));
+                        $.each(response.photos.photo, function (seq, value) {
+                            var photo_id = value.id;
+                            var photo_url = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=" + api_key + "&photo_id=" + photo_id + "&format=json&nojsoncallback=1";
+                            //https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=07f5406aa61661dd1a9fa441aeb74739&photo_id=33678366578&format=rest
+                            $.ajax({
+                                url: photo_url,
+                                dataType: 'json',
+                                success: function (data) {
+                                    console.log(data);
+                                    if (data && data.stat == 'ok') {
+                                        var img_url = "https://live.staticflickr.com/" + data.photo.server + "/" + photo_id + "_" + data.photo.secret + "_z.jpg";
+                                        var divPostImg = renderPostIMGContainer.call(this, img_url, userInfo.person.photosurl._content || 'https://www.flickr.com/photos/170802717@N06/');
 
-                                            // console.log(data);
-                                            // var img_url = "https://live.staticflickr.com/" + data.photo.server + "/" + photo_id + "_" + data.photo.secret + "_z.jpg";
-                                            // var img = $("<img/>").attr("src", img_url).css({ "width": "325px" });
-                                            // var createdAt = $("<span/>").text("Posted " + data.photo.dateuploaded);
-                                            // var inner_footer = footer.clone().append(createdAt);
-                                            // var caption = "";
-                                            // if (data.photo.description._content) {
-                                            //     caption = $("<div/>").text(data.photo.description._content).addClass("div_caption");
-                                            // }
-                                            // var div = $("<div/>").append(img, caption, inner_footer).addClass("post_container");
-                                            // $("#content-farm").append(div);
+                                        var post_info = render_post_info.call(this, "https://s.yimg.com/pw/images/buddyicon05_r.png#170802717@N06",
+                                            userInfo.person.realname._content, userInfo.id, data.photo.dateuploaded * 1000, "Flickr")
+                                        var caption = "";
+                                        if (data.photo.description) {
+                                            caption = $("<div/>").text(data.photo.description._content).addClass("post-content");
                                         }
-                                        // Print Title On the Page
+                                        var div = $("<div/>").append(divPostImg, post_info, caption).addClass("post-container");
+                                        $("#content-farm").append(div);
                                     }
-                                });
-                            })
+                                    // Print Title On the Page
+                                }
+                            });
                         })
                     }
                     // Print Title On the Page
@@ -172,78 +178,99 @@
             });
         }
 
+        function getflickrUserInfo(api_key, user_id) {
+            return $.ajax({
+                url: "https://api.flickr.com/services/rest/?method=flickr.people.getInfo&api_key=" + api_key + "&user_id=" + user_id + "&format=json&nojsoncallback=1",
+                method: "GET",
+                dataType: 'json'
+            })
+        }
+
+
         function getYoutubeList(channel_id, key) {
             var channel_id = channel_id || 'UCXer80GTQcPPs4E1HcjFS2g';
             var key = key || 'AIzaSyBO_huHjsv757yzeRa0gdWxHLLejU5Kro0';
-            $.when(getYoutubeChannel.call(this, channel_id, key)).done(function(response){
+            $.when(getYoutubeChannel.call(this, channel_id, key)).done(function (response) {
                 $.each(response.items, function (seq, playlist) {
                     $.when(getYoutubePlayListVideos.call(this, playlist.contentDetails.relatedPlaylists.uploads, key)).done(function (videoList) {
                         $.each(videoList.items, function (seq, data) {
-                            console.log(data);
                             var url = "https://www.youtube.com/embed/" + data.contentDetails.videoId;
-                            var video = $("<embed/>").width(500).height(300).attr({"src":url});
+                            var video = $("<embed/>").width(350).height(300).attr({ "src": url });
                             $("#content-farm").append(video);
+
+                            var post_info = render_post_info.call(this, playlist.snippet.thumbnails.medium.url, data.snippet.channelTitle,
+                                data.snippet.channelId, new Date(data.contentDetails.videoPublishedAt).getTime(), "Youtube");
+                            var caption = "";
+                            if (data.snippet.description != '') {
+                                caption = $("<div/>").text(data.snippet.description).addClass("post-content");
+                            }
+                            var div = $("<div/>").append(video, post_info, caption).addClass("post-container youtube");
+                            $("#content-farm").append(div);
                         })
                     })
                 })
             })
-            // $.ajax({
-            //     url: "https://www.googleapis.com/youtube/v3/channels",
-            //     data: { part: "contentDetails"
-            //     ,id: channel_id
-            //     , key: key},
-            //     dataType: 'json',
-            //     success: function (response) {
-            //         $.each(response.items, function(seq, playlist){
-			// 			console.log(playlist.id)
-            //         })
-            //     }
-            // })
         }
-        function getYoutubeChannel(channel_id, key){
+        function getYoutubeChannel(channel_id, key) {
             return $.ajax({
                 url: "https://www.googleapis.com/youtube/v3/channels",
-                data: { part: "contentDetails"
-                ,id: channel_id
-                , key: key},
+                data: {
+                    part: "snippet, contentDetails"
+                    , id: channel_id
+                    , key: key
+                },
                 dataType: 'json'
             })
         }
 
-        function getYoutubePlayListVideos(playlistId, key){
+        function getYoutubePlayListVideos(playlistId, key) {
             return $.ajax({
                 url: "https://www.googleapis.com/youtube/v3/playlistItems",
-                data: { part: "contentDetails"
-                ,playlistId: playlistId
-                , key: key},
+                data: {
+                    part: "snippet, contentDetails"
+                    , playlistId: playlistId
+                    , key: key
+                },
                 dataType: 'json'
             })
         }
 
-        function getTumblrs(api_key){//getTumblrs.call(this, 'dXwvMlyqgyy000m7vWRXDOQBXDBlhE52aJVgApiUGH4A1bHJkI')
+        function getTumblr(api_key) {//getTumblr.call(this, 'dXwvMlyqgyy000m7vWRXDOQBXDBlhE52aJVgApiUGH4A1bHJkI')
             var api_key = api_key || 'dXwvMlyqgyy000m7vWRXDOQBXDBlhE52aJVgApiUGH4A1bHJkI';
             $.ajax({
                 url: "https://api.tumblr.com/v2/blog/black-dd0101.tumblr.com/posts/",
                 data: {
-                    api_key: api_key},
+                    api_key: api_key
+                },
                 dataType: 'json',
-                success: function(response){
-                    console.log(response);
-                    if(response.meta.status == 200){
-                        $.getScript( "https://assets.tumblr.com/post.js", function( data, textStatus, jqxhr ) {
-                            $.each(response.response.posts, function (seq, post) {
-                                var embed_url = "https://embed.tumblr.com/embed/post/a3SqPf00rL1mpKmJpjfwrA/" + post.id;
-                                console.log(embed_url);
-                                var div = $("<div/>").attr({ "data-href": embed_url }).addClass("tumblr-post").css({width:"300px", "display": "inline-block"});
-                                console.log(div);
+                success: function (response) {
+                    if (response.meta.status == 200) {
+                        $.each(response.response.posts, function (seq, post) {
+                            var img_post = '', a_img_post = '', divPostImg = $("<div>").addClass("postImg-container");
+                            if (post.type == "photo") {
+                                divPostImg = renderPostIMGContainer.call(this, post.photos[0].alt_sizes[4].url, post.post_url);
+                            }
+                            var post_info = render_post_info.call(this, "https://assets.tumblr.com/images/default_avatar/octahedron_open_128.png",
+                                post.blog_name, post.blog_name, new Date(post.date).getTime(), "Tumblr")
 
-                                $("#content-farm").append(div);
-                            })
-                        });
+                            var caption = "";
+                            if (post.summary) {
+                                caption = $("<div/>").html(post.summary).addClass("post-content");
+                            }
+                            var div = $("<div/>").append(divPostImg, post_info, caption).addClass("post-container");
+                            $("#content-farm").append(div);
+                        })
                     }
                     $(".tumblr-embed").css("display", "inline-block");
                 }
             })
+        }
+
+        function renderPostIMGContainer(photo_url, post_url) {
+            var img_post = $("<img/>").attr("src", photo_url).addClass("img_post");
+            var a_img_post = $("<a/>").attr({ "href": post_url, "target": "_blank" }).append(img_post);
+            var div = $("<div/>").append(a_img_post).addClass("postImg-container");
+            return div;
         }
 
         function parseParms(str) {
@@ -259,14 +286,23 @@
             return data;
         }
         function timeDifference(date) {
-            var dateFromAPI = "2016-02-10T00:00:00Z";
-            var now = new Date();
-            var datefromAPITimeStamp = (new Date(dateFromAPI)).getTime();
-            var nowTimeStamp = now.getTime();
-            var microSecondsDiff = Math.abs(datefromAPITimeStamp - nowTimeStamp);
-            // Number of milliseconds per day =
-            //   24 hrs/day * 60 minutes/hour * 60 seconds/minute * 1000 msecs/second
-            var daysDiff = Math.floor(microSecondsDiff / (1000 * 60 * 60 * 24));
+            var dateDiff = new Date() - date;
+            var weeksDiff = Math.floor(dateDiff / 1000 / 60 / 60 / 24 / 7) || 0;
+            var daysDiff = Math.floor(dateDiff / 1000 / 60 / 60 / 24) || 0;
+            var hoursDiff = Math.floor(dateDiff / 1000 / 60 / 60) || 0;
+            var minsDiff = Math.floor(dateDiff / 1000 / 60) || 0;
+            if (weeksDiff != 0) {
+                return "Posted " + weeksDiff + " weeks ago";
+            }
+            else if (daysDiff != 0) {
+                return "Posted " + daysDiff + " days ago";
+            }
+            else if (hoursDiff != 0) {
+                return "Posted " + hoursDiff + " hrs ago";
+            }
+            else {
+                return "Posted " + minsDiff + " hrs ago";
+            }
         }
         $(document).ready(function () {
             console.log("AA");
@@ -285,12 +321,46 @@
         });	
     </script>
     <style>
-        .post_container {
+        .postImg-container {
+            min-height: 100px;
+        }
+
+        .post-container {
             border: 1px solid grey;
-            width: 350px;
-            text-align: center;
-            padding-top: 15px;
+            /* text-align: center; */
+            margin: 15px;
+            border-radius: 10px;
+            max-width: 350px;
+            min-width: 150px;
+        }
+
+        .post-container.youtube {
+            border-radius: unset;
+        }
+
+        img.profile_picture {
+            border-radius: 100%;
+            width: 50px;
+            height: 50px;
+            vertical-align: top;
+            cursor: pointer;
+        }
+
+        .post_info {
+            margin: 10px;
+            min-height: 60px;
+            border-bottom: 2px solid grey;
+        }
+
+        .profile_info {
             display: inline-block;
+            margin-left: 10px;
+        }
+
+        img.img_post {
+            border-radius: 10px;
+            width: 100%;
+            max-width: 320px;
         }
 
         .footer {
@@ -309,24 +379,35 @@
             margin-left: 10px;
         }
 
-        .div_caption {
+        .post-content {
+            min-height: 20px;
             text-align: left;
-            margin: 5px 15px -10px 15px;
+            padding: 10px;
+            /* margin: 5px 15px -10px 15px; */
         }
 
         .farm_container {
-            display: inline-block;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
         }
-	    
-	body{
-		margin: 0 10% 0 10%;
-	    }
+
+        .profile_name {
+            font-size: 12px;
+            color: grey;
+            padding: 3px;
+        }
+
+        .social_icon {
+            width: 35px;
+            float: right;
+        }
     </style>
 </head>
 
 <body>
     <div id="content-farm" class="farm_container"></div>
-        <!-- <div id="fb-postfarm" class="farm_container"></div>
+    <!-- <div id="fb-postfarm" class="farm_container"></div>
         <div id="ig-postfarm" class="farm_container"></div>
         <div id="flickr-postfarm" class="farm_container"></div> -->
     <!-- <div class="fb-page" data-href="https://www.facebook.com/facebook" data-tabs="timeline" data-small-header="false"
@@ -346,11 +427,12 @@
                 version: 'v3.2'
             });
             // FB.AppEvents.logPageView();
-            loopFBposts.call(this, "121839578966030", "333396590622882|zEw0UcZtz6nbkDKNV02VqGfQzS0");
+
+            // loopFBposts.call(this, "121839578966030", "333396590622882|zEw0UcZtz6nbkDKNV02VqGfQzS0");
             getflickrPhoto.call(this, '07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06');
             getIGposts.call(this, "12480168229", "12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79");
             getYoutubeList.call(this, 'UCXer80GTQcPPs4E1HcjFS2g', 'AIzaSyBO_huHjsv757yzeRa0gdWxHLLejU5Kro0');
-            getTumblrs.call(this, 'dXwvMlyqgyy000m7vWRXDOQBXDBlhE52aJVgApiUGH4A1bHJkI');
+            getTumblr.call(this, 'dXwvMlyqgyy000m7vWRXDOQBXDBlhE52aJVgApiUGH4A1bHJkI');
 
         };
         (function (d, s, id) {
@@ -366,4 +448,5 @@
 <!-- <script src="https://embedr.flickr.com/assets/client-code.js" charset="utf-8"></script> -->
 <!-- <script src="https://assets.tumblr.com/post.js"></script> -->
 <script async src="//www.instagram.com/embed.js"></script>
+
 </html>
