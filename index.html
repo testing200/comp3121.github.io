@@ -50,7 +50,6 @@
                 }
             );
         }
-
         function findTag(jobj_caption, caption) {
             caption = caption.trim().replace(/(\r\n|\n|\r)/gm, "");;
             var arrCaption = caption.split("#");
@@ -61,7 +60,6 @@
                 });
             }
         }
-
         function render_post_info(profile_picture, profile_name, profile_username, createdAt, social_type) {
             var jobj_profile_picture = '';
             var profile_name = $("<div/>").text(profile_name).addClass(_class_profile_name);
@@ -104,13 +102,11 @@
                     break;
                 default: break;
             }
-
             var profile_info = $("<div/>").append(jobj_profile_username, profile_name, createDatetime, dateago).addClass(_class_profile_info);
             var post_info = $("<div/>").addClass("post_info")
                 .append(jobj_profile_picture, profile_info, social_icon);
             return post_info;
         }
-
         function getIGposts(user_id, access_token) {
             var access_token = access_token || '12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79';
             var user_id = user_id || '12480168229';
@@ -132,7 +128,6 @@
                 dataType: 'json'
             });
         }
-
         function getflickrPhoto(api_key, user_id) {
             //getflickrPhoto('07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06')
             var api_key = api_key || '07f5406aa61661dd1a9fa441aeb74739';
@@ -156,7 +151,6 @@
                                     if (data && data.stat == 'ok') {
                                         var img_url = "https://live.staticflickr.com/" + data.photo.server + "/" + photo_id + "_" + data.photo.secret + "_z.jpg";
                                         var divPostImg = renderPostIMGContainer.call(this, img_url, data.photo.urls.url[0]._content);
-
                                         var post_info = render_post_info.call(this, "https://s.yimg.com/pw/images/buddyicon05_r.png#170802717@N06",
                                             data.photo.owner.realname, data.photo.owner.nsid, data.photo.dateuploaded * 1000, "Flickr")
                                         var caption = "";
@@ -175,7 +169,6 @@
                 }
             });
         }
-
         function getflickrUserInfo(api_key, user_id) {
             return $.ajax({
                 url: "https://api.flickr.com/services/rest/?method=flickr.people.getInfo&api_key=" + api_key + "&user_id=" + user_id + "&format=json&nojsoncallback=1",
@@ -183,8 +176,6 @@
                 dataType: 'jsonp'
             })
         }
-
-
         function getYoutubeList(channel_id, key) {
             var channel_id = channel_id || 'UCXer80GTQcPPs4E1HcjFS2g';
             var key = key || 'AIzaSyBO_huHjsv757yzeRa0gdWxHLLejU5Kro0';
@@ -193,9 +184,8 @@
                     $.when(getYoutubePlayListVideos.call(this, playlist.contentDetails.relatedPlaylists.uploads, key)).done(function (videoList) {
                         $.each(videoList.items, function (seq, data) {
                             var url = "https://www.youtube.com/embed/" + data.contentDetails.videoId;
-                            var video = $("<embed/>").width(350).height(300).attr({ "src": url });
+                            var video = $("<embed/>").width(300).height(300).attr({ "src": url });
                             $("#content-farm").append(video);
-
                             var post_info = render_post_info.call(this, playlist.snippet.thumbnails.medium.url, data.snippet.channelTitle,
                                 data.snippet.channelId, new Date(data.contentDetails.videoPublishedAt).getTime(), "Youtube");
                             var caption = "";
@@ -220,7 +210,6 @@
                 dataType: 'json'
             })
         }
-
         function getYoutubePlayListVideos(playlistId, key) {
             return $.ajax({
                 url: "https://www.googleapis.com/youtube/v3/playlistItems",
@@ -232,7 +221,6 @@
                 dataType: 'json'
             })
         }
-
         function getTumblr(api_key) {//getTumblr.call(this, 'dXwvMlyqgyy000m7vWRXDOQBXDBlhE52aJVgApiUGH4A1bHJkI')
             var api_key = api_key || 'dXwvMlyqgyy000m7vWRXDOQBXDBlhE52aJVgApiUGH4A1bHJkI';
             $.ajax({
@@ -250,7 +238,6 @@
                             }
                             var post_info = render_post_info.call(this, "https://assets.tumblr.com/images/default_avatar/octahedron_open_128.png",
                                 post.blog_name, post.blog_name, new Date(post.date).getTime(), "Tumblr")
-
                             var caption = "";
                             if (post.summary) {
                                 caption = $("<div/>").html(post.summary).addClass("post-content");
@@ -263,14 +250,12 @@
                 }
             })
         }
-
         function renderPostIMGContainer(photo_url, post_url) {
             var img_post = $("<img/>").attr("src", photo_url).addClass("img_post");
             var a_img_post = $("<a/>").attr({ "href": post_url, "target": "_blank" }).append(img_post);
             var div = $("<div/>").append(a_img_post).addClass("postImg-container");
             return div;
         }
-
         function parseParms(str) {
             var pieces = str.split("&"), data = {}, i, parts;
             // process each query pair
@@ -313,7 +298,6 @@
             // getIGposts.call(this, "12480168229", "12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79");
             // getflickrPhoto.call(this, '07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06');
             // getYoutubeList.call(this, 'UCXer80GTQcPPs4E1HcjFS2g', 'AIzaSyBO_huHjsv757yzeRa0gdWxHLLejU5Kro0')
-
             // test.call(this);
             console.log(parseParms(document.location.hash.substring(1)));
         });	
@@ -322,20 +306,17 @@
         .postImg-container {
             min-height: 100px;
         }
-
         .post-container {
             border: 1px solid grey;
             /* text-align: center; */
             margin: 15px;
             border-radius: 10px;
-            max-width: 350px;
-            min-width: 150px;
+            max-width: 300px;
+            width: 300px;
         }
-
         .post-container.youtube {
             border-radius: unset;
         }
-
         img.profile_picture {
             border-radius: 100%;
             width: 50px;
@@ -343,24 +324,20 @@
             vertical-align: top;
             cursor: pointer;
         }
-
         .post_info {
             margin: 10px;
             min-height: 60px;
             border-bottom: 2px solid grey;
         }
-
         .profile_info {
             display: inline-block;
             margin-left: 10px;
         }
-
         img.img_post {
             border-radius: 10px;
             width: 100%;
             max-width: 320px;
         }
-
         .footer {
             background-color: lightblue;
             vertical-align: middle;
@@ -370,32 +347,27 @@
             display: flex;
             margin-top: 15px;
         }
-
         .footer_icon {
             position: relative;
             width: 25px;
             margin-left: 10px;
         }
-
         .post-content {
             min-height: 20px;
             text-align: left;
             padding: 10px;
             /* margin: 5px 15px -10px 15px; */
         }
-
         .farm_container {
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
         }
-
         .profile_name {
             font-size: 12px;
             color: grey;
             padding: 3px;
         }
-
         .social_icon {
             width: 35px;
             float: right;
@@ -426,13 +398,11 @@
                 version: 'v3.2'
             });
             // FB.AppEvents.logPageView();
-
             // loopFBposts.call(this, "121839578966030", "333396590622882|zEw0UcZtz6nbkDKNV02VqGfQzS0");
             getflickrPhoto.call(this, '07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06');
             getIGposts.call(this, "12480168229", "12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79");
             getYoutubeList.call(this, 'UCXer80GTQcPPs4E1HcjFS2g', 'AIzaSyBO_huHjsv757yzeRa0gdWxHLLejU5Kro0');
             getTumblr.call(this, 'dXwvMlyqgyy000m7vWRXDOQBXDBlhE52aJVgApiUGH4A1bHJkI');
-
         };
         (function (d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
