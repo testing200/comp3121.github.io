@@ -317,87 +317,29 @@
             console.log(parseParms(document.location.hash.substring(1)));
         });	
     </script>
-    <style>
-        .postImg-container {
-            min-height: 100px;
-        }
-        .post-container {
-            background-color: white;
-            border: 1px solid grey;
-            /* text-align: center; */
-            margin: 15px;
-            border-radius: 10px;
-            max-width: 300px;
-            width: 300px;
-        }
-        .post-container.youtube {
-            border-radius: unset;
-        }
-        img.profile_picture {
-            border-radius: 100%;
-            width: 50px;
-            height: 50px;
-            vertical-align: top;
-            cursor: pointer;
-        }
-        .post_info {
-            margin: 10px;
-            min-height: 60px;
-            border-bottom: 2px solid grey;
-        }
-        .profile_info {
-            display: inline-block;
-            margin-left: 10px;
-        }
-        img.img_post {
-            border-radius: 10px;
-            width: 100%;
-            max-width: 320px;
-        }
-        .footer {
-            background-color: lightblue;
-            vertical-align: middle;
-            line-height: 25px;
-            height: 25px;
-            text-align: left;
-            display: flex;
-            margin-top: 15px;
-        }
-        .footer_icon {
-            position: relative;
-            width: 25px;
-            margin-left: 10px;
-        }
-        .post-content {
-            min-height: 20px;
-            text-align: left;
-            padding: 10px;
-            /* margin: 5px 15px -10px 15px; */
-        }
-        .farm_container {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .profile_name {
-            font-size: 12px;
-            color: grey;
-            padding: 3px;
-        }
-        .social_icon {
-            width: 35px;
-            float: right;
-            cursor: pointer;
-        }
-        body{
-            background-image: url('./images/background3.jpg');
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/css.css">
 </head>
 
 <body>
-    <div id="content-farm" class="farm_container"></div>
+<video autoplay muted loop id="Bg_Video">
+    <source class="active" src="videos/BG_Video.mp4" type="video/mp4">
+</video>
+		<div class="menubox">
+		<button class="ActiveButton">LIFE</button>
+		<button>SERVICES</button>
+		<button>CONTACT</button>
+	</div>
+<div class="First_layer">
+    <div id="Main_Search" class="SearchBoxDiv">
+        <input placeholder="Search MashUp"></input>		
+    </div>
+    <h1 id="First_layer_title">RonnX MashUp</h1>
+
+
+</div>
+    <div id="content-farm" class="farm_container">
+	
+	</div>
     <!-- <div id="fb-postfarm" class="farm_container"></div>
         <div id="ig-postfarm" class="farm_container"></div>
         <div id="flickr-postfarm" class="farm_container"></div> -->
@@ -406,6 +348,40 @@
         <blockquote cite="https://www.facebook.com/facebook" class="fb-xfbml-parse-ignore"><a
                 href="https://www.facebook.com/facebook">Facebook</a></blockquote>
     </div> -->
+<div class="Page_Footer">
+	<div class="Page_Detail">
+		<div>Studio:
+			<div>
+			RM1234 House Name, Street Name 
+			<br>
+			City, HK
+			</div>
+		</div>
+		<div>Contact:
+		<div>
+			Phone: +852 3190 4788 
+			<br>
+			Mobile: +852 9111 4788 
+			<br>
+			Email: Ronny@Ronnx.w.com
+		</div>
+		</div>
+		<div>Links:
+			<div>
+			<a href="www.google.com">My Facebook</a>
+			<br>
+			<a href="www.google.com">My Instagram</a>
+			<br>
+			<a href="www.google.com">My Youtube</a>
+			<br>
+			<a href="www.google.com">My Tumblr</a>
+			<br>
+			<a href="www.google.com">My Flicker</a>
+			</div>
+		</div>
+	</div>
+		<div class="Copyright">Mashup © Copyright RONNX.W PAGE - All Rights Reserved</div>
+</div>
 </body>
 <script async defer crossorigin="anonymous"
     src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2&appId=333396590622882&autoLogAppEvents=1"></script>
