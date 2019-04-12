@@ -40,9 +40,20 @@
                 function (response) {
                     console.log(response);
                     $.each(response.data, function (seq, value) {
-                        var div = $("<div/>").attr({ "data-href": value.permalink_url, "data-width": 180, "data-height": 150 })
+                        /*var divPostImg = renderPostIMGContainer.call(this, value.images.low_resolution.url, value.link);
+                        var post_info = render_post_info.call(this, value.user.profile_picture, value.user.full_name, value.user.username, value.created_time * 1000, "Instagram")
+                        var caption = "";
+                        if (value.caption) {
+                            caption = $("<div/>").text(value.caption.text).addClass("post-content");
+                        }*/
+                        var div = $("<div/>").attr({ "data-href": value.permalink_url, "data-width": 300, "data-height": 200 })
                             .addClass("fb-post");
-                        $("#content-farm").append(div);
+                        var divContainer = $("<div/>").append(div).addClass("post-container");
+                        $("#content-farm").append(divContainer);
+
+                        /*var div = $("<div/>").attr({ "data-href": value.permalink_url, "data-width": 180, "data-height": 150 })
+                            .addClass("fb-post");
+                        $("#content-farm").append(div);*/
                     })
                     if (response && !response.error) {
                         /* handle the result */
@@ -363,6 +374,7 @@
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
+            justify-content: center;
         }
         .profile_name {
             font-size: 12px;
@@ -402,7 +414,7 @@
                 version: 'v3.2'
             });
             // FB.AppEvents.logPageView();
-            // loopFBposts.call(this, "121839578966030", "333396590622882|zEw0UcZtz6nbkDKNV02VqGfQzS0");
+            loopFBposts.call(this, "121839578966030", "333396590622882|zEw0UcZtz6nbkDKNV02VqGfQzS0");
             getflickrPhoto.call(this, '07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06');
             getIGposts.call(this, "12480168229", "12480168229.1677ed0.04b2ebbd6f3d4ad19c587046e1cebd79");
             getYoutubeList.call(this, 'UCXer80GTQcPPs4E1HcjFS2g', 'AIzaSyBO_huHjsv757yzeRa0gdWxHLLejU5Kro0');
