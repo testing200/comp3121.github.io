@@ -6,12 +6,12 @@
 	background-color: white;
 	border: 1px solid grey;
 	/* text-align: center; */
-	margin: 15px;
+	margin: 15px;/*15px;*/
 	border-radius: 12px;
-	max-width: 300px;
-	    box-shadow: 10px 10px #666;
-	width: 300px;
-	padding:10px;
+	/* max-width: 350px; */
+	box-shadow: 10px 10px #666;
+	width: 320px;
+	/* padding:10px; */
 }
 .menubox{
 	position:absolute;
@@ -19,6 +19,7 @@
 	right:25px;
 	
 }
+
 img.profile_picture {
 	border-radius: 100%;
 	width: 50px;
@@ -33,14 +34,14 @@ img.profile_picture {
 }
 .profile_info {
 	display: inline-block;
-	margin-left: 10px;
-	
-
+	margin-left: 10px;	
+	font-size: 14px;
 }
 img.img_post {
 	border-radius: 10px;
 	width: 100%;
-	max-width: 320px;
+	max-width: 350px;
+	cursor: pointer;
 }
 .footer {
 	background-color: lightblue;
@@ -96,9 +97,7 @@ body{
     color: white;
 	position:relative;
 	margin-top:15px;
-	margin-bottom:150px;
-
-		margin-left:100px;
+	margin-left:100px;
 }
 .First_layer>.SearchBoxDiv{
 	    width: 500px;
@@ -106,8 +105,9 @@ body{
     position: relative;
 
 }
-.First_layer>h1{
-    font-size: 62px;
+.First_layer>div>h1{
+	font-size: 62px;
+	display:inline-block;
    
 }
 .First_layer>.SearchBoxDiv>input{
@@ -184,3 +184,72 @@ a{
 	color:#fff;
 	text-decoration: none;
 }
+.menu_icon{
+	margin-right: 20px;
+}
+.menu_icon>img{
+	width: 50px;
+}
+.menu_icon_bar{
+	display: inline-block;
+	margin-left: 20px;
+}
+
+/* For modal use */
+.modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	padding-top: 100px; /* Location of the box */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0,0,0); /* Fallback color */
+	background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+  }
+  
+  /* Modal Content (image) */
+  .modal-content {
+	margin: auto;
+	display: block;
+	/* width: 50%;
+	height: 50%; */
+	max-width: 700px;
+  }
+  
+  /* Add Animation */
+  .modal-content {  
+	-webkit-animation-name: zoom;
+	-webkit-animation-duration: 0.6s;
+	animation-name: zoom;
+	animation-duration: 0.6s;
+  }
+
+  .close {
+	position: absolute;
+	top: 15px;
+	right: 35px;
+	color: #f1f1f1;
+	font-size: 40px;
+	font-weight: bold;
+	transition: 0.3s;
+  }
+  
+  .close:hover,
+  .close:focus {
+	color: #bbb;
+	text-decoration: none;
+	cursor: pointer;
+  }
+
+  @-webkit-keyframes zoom {
+	from {-webkit-transform:scale(0)} 
+	to {-webkit-transform:scale(1)}
+  }
+  
+  @keyframes zoom {
+	from {transform:scale(0)} 
+	to {transform:scale(1)}
+  }
