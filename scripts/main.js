@@ -364,6 +364,7 @@
             });
             $(".menu_icon").click(function(el){
                 var category = $(this).attr('id');
+                $("#Main_Search input").val("");
                 if(_.isUndefined(category)){
                     $(".post-container").show();
                 }
