@@ -216,7 +216,6 @@
                     var img_post = '', a_img_post = '', divPostImg = $("<div>").addClass("postImg-container");
                     var caption = $("<div/>").addClass("post-content");
 
-                    console.log(post);
                     switch(post.type){
                         case "photo":
                         divPostImg = renderPostIMGContainer.call(this, post.full_picture, post.link); 
