@@ -102,7 +102,7 @@ body{
 .First_layer>.SearchBoxDiv{
 	    width: 500px;
     display: inline-block;
-    position: relative;
+    position: fixed;
 
 }
 .First_layer>div>h1{
@@ -111,7 +111,7 @@ body{
    
 }
 .First_layer>.SearchBoxDiv>input{
-    width: 800px;
+    width: 300px;
     position: relative;
     height: 25px;
     padding: 5px;
@@ -145,7 +145,7 @@ body{
 	background: #00000050;
 	color: white;
 	padding: 150px;
-	margin-top:250px;
+	margin-top:50px;
 }
 .menubox>button{
 	background:#38f;
@@ -180,9 +180,8 @@ body{
 	margin-top:150px;
 	text-align:center;
 }
-a{
+.myself>a{
 	color:#fff;
-	text-decoration: none;
 }
 .menu_icon{
 	margin-right: 20px;
@@ -193,6 +192,48 @@ a{
 .menu_icon_bar{
 	display: inline-block;
 	margin-left: 20px;
+}
+
+.url_container{
+	background-color: #EBEDF0;
+	margin: 5px -10px 0 -10px;
+	color:black;
+}
+
+.url_container:hover{
+	background-color: rgb(196, 196, 196);
+}
+
+.url_container_caption{
+	color: grey;
+	padding: 5px 10px 5px 10px;
+}
+.url_container_title{
+	padding: 0px 10px 5px;
+}
+
+.url_container_desc{
+	font-size: 12px;
+	padding: 0px 10px;
+	color: grey;
+}
+/* 
+a:visited{
+	color:black;
+} */
+
+a.url_block:hover{
+	text-decoration:none;
+}
+
+a:hover{
+	text-decoration:underline;
+}
+
+a, a:active, a:visited, a:focus {
+	text-decoration:none;
+	cursor: pointer;
+	color: #365899;
 }
 
 /* For modal use */
