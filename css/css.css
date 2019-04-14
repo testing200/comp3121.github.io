@@ -108,6 +108,7 @@ body{
 .First_layer>div>h1{
 	font-size: 62px;
 	display:inline-block;
+	margin-top: 80px;
    
 }
 .First_layer>.SearchBoxDiv>input{
