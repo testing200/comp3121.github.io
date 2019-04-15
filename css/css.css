@@ -237,6 +237,10 @@ a, a:active, a:visited, a:focus {
 	color: #365899;
 }
 
+@media screen and (max-width:900px) {
+	display:none;
+}
+
 /* For modal use */
 .modal {
 	display: none; /* Hidden by default */
