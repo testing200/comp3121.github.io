@@ -228,7 +228,7 @@
                         caption.append(revised_message, url_container);
                         break;                        
                         default:
-                        caption = caption.html(post.message);
+                        caption = caption.html(urlify(post.message));
                         break;                        
                     }
 
