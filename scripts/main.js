@@ -84,7 +84,6 @@
             });
         }
         function getflickrPhoto(api_key, user_id) {
-            //getflickrPhoto('07f5406aa61661dd1a9fa441aeb74739', '170802717%40N06')
             var api_key = api_key || '07f5406aa61661dd1a9fa441aeb74739';
             var user_id = user_id || '170802717@N06';
             $.ajax({
@@ -114,12 +113,10 @@
                                         var div = $("<div/>").append(divPostImg, post_info, caption).addClass("post-container flickr");
                                         $("#content-farm").append(div);
                                     }
-                                    // Print Title On the Page
                                 }
                             });
                         })
                     }
-                    // Print Title On the Page
                 }
             });
         }
@@ -138,7 +135,7 @@
                     $.when(getYoutubePlayListVideos.call(this, playlist.contentDetails.relatedPlaylists.uploads, key)).done(function (videoList) {
                         $.each(videoList.items, function (seq, data) {
                             var url = "https://www.youtube.com/embed/" + data.contentDetails.videoId;
-                            var video = $("<embed/>").width(320).height(300).attr({ "src": url });
+                            var video = $("<embed/>").width(300).height(300).attr({ "src": url });
                             $("#content-farm").append(video);
                             var post_info = render_post_info.call(this, playlist.snippet.thumbnails.medium.url, data.snippet.channelTitle,
                                 data.snippet.channelId, url, new Date(data.contentDetails.videoPublishedAt).getTime(), "Youtube");
