@@ -156,7 +156,6 @@ body {
 .Page_Footer {
 	background: #00000050;
 	color: white;
-	padding: 150px;
 	margin-top: 50px;
 }
 
@@ -194,7 +193,6 @@ body {
 }
 
 .Copyright {
-	margin-top: 150px;
 	text-align: center;
 }
 
