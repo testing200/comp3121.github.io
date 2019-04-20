@@ -258,6 +258,12 @@ a, a:active, a:visited, a:focus {
 	.menubox {
 		display: none;
 	}
+	.First_layer>div>h1{
+		font-size:36px;
+	}
+	.menu_icon_bar{
+	    width: 220px;		
+	}
 }
 
 /* For modal use */
