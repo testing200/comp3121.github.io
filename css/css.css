@@ -264,6 +264,9 @@ a, a:active, a:visited, a:focus {
 	.menu_icon_bar{
 	    width: 220px;		
 	}
+	.First_layer{
+		margin-left:40px;
+	}
 }
 
 /* For modal use */
